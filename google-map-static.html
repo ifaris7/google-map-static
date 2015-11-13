@@ -1,0 +1,167 @@
+<link rel="import" href="../../res/polymer/polymer.html">
+
+<link rel="import" href="../../res/iron-image/iron-image.html">
+<link rel="import" href="../../res/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="google-map-static-marker.html">
+
+<!--
+The `google-map-static` element fetches a map from the Google Static Maps API.
+
+<b>Example</b> - minimal configuration
+
+    <google-map-static lat="37.77493" lng="-122.41942"
+        api-key="YOUR_API_KEY"></google-map-static>
+
+<b>Example</b> - add some markers to the map, wrangle them all, and change the map type
+
+    <google-map-static lat="37.77493" lng="-122.41942" map-type="terrain"
+        fit-to-markers api-key="YOUR_API_KEY">
+        <google-map-static-marker lat="37.77493" lng="-122.41942"></google-map-static-marker>
+        <google-map-static-marker lat="37.78493" lng="-122.42442"></google-map-static-marker>
+    </google-map-static>
+
+<b>Example</b> - change the marker styling
+
+    <google-map-static lat="37.77493" lng="-122.41942" zoom="13" api-key="YOUR_API_KEY">
+        <google-map-static-marker color="0x00FF00" size="mid" label="M"
+            lat="37.77493" lng="-122.41942"></google-map-static-marker>
+    </google-map-static>
+
+<b>Example</b> - for convenience, add a simple marker (with default styling) at the middle of the map
+
+    <google-map-static lat="37.77493" lng="-122.41942" marker-at-center
+        api-key="YOUR_API_KEY"></google-map-static>
+
+@demo
+-->
+
+<dom-module id="google-map-static">
+	<style>
+	</style>
+
+	<template>
+		<iron-image src="{{_url}}"></iron-image>
+		<content id="markers" select="google-map-static-marker"></content>
+	</template>
+
+	<script>
+	Polymer({
+		is: "google-map-static",
+
+		properties: {
+			/**
+			 * Computed URL of the static map.
+			 */
+			_url: {
+				type: String
+			},
+			/**
+			 * Latitude of the center of the map. Optional only if you specify markers.
+			 */
+			lat: {
+				type: Number,
+			},
+			/**
+			 * Longitude of the center of the map. Optional only if you specify markers.
+			 */
+			lng: {
+				type: Number,
+			},
+			/**
+			 * Width of the resulting image.
+			 */
+			sizeX: {
+				type: Number,
+				value: 640,
+			},
+			/**
+			 * Height of the resulting image.
+			 */
+			sizeY: {
+				type: Number,
+				value: 480,
+			},
+			/**
+			 * Choose which type of map to show. One of 'roadmap', 'satellite', 'hybrid', 'terrain'.
+			 */
+			mapType: {
+				type: String,
+				value: "roadmap",
+			},
+			/**
+			 * Zoom level of the map.
+			 */
+			zoom: {
+				type: Number,
+				value: 10,
+			},
+			/**
+			 * Let the map autozoom to contain all markers. Overrides zoom parameter.
+			 */
+			fitToMarkers: {
+				type: Boolean,
+				value: false,
+			},
+			/**
+			 * For convenience you can place a marker at the center of the map.
+			 */
+			markerAtCenter: {
+				type: Boolean,
+				value: false,
+			},
+			/**
+			 * Required. API key given to you by Google.
+			 */
+			apiKey: {
+				type: String,
+			},
+		},
+
+		observers: [
+			"_computeUrl(lat, lng, sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey)"
+		],
+
+		attached: function() {
+			this._computeUrl();
+		},
+
+		_computeUrl: function() {
+			url = "https://maps.googleapis.com/maps/api/staticmap?";
+			args = [];
+
+			if(this.apiKey) args.push("key=" + this.apiKey);
+			else {
+				console.warn("google-map-static: api-key not specified");
+			}
+
+			if(this.lat && this.lng) args.push("center=" + String(this.lat) + "," + String(this.lng));
+			if(!this.fitToMarkers) args.push("zoom=" + String(this.zoom));
+			if(this.mapType) args.push("maptype=" + this.mapType);
+
+			if(this.sizeX > 0 && this.sizeY > 0) args.push("size=" + String(this.sizeX) + "x" + String(this.sizeY));
+			else {
+				console.warn("google-map-static: invalid size");
+			}
+
+			if(this.markerAtCenter) args.push("markers=" + String(this.lat) + "," + String(this.lng));
+
+			var markers = Polymer.dom(this.$.markers).getDistributedNodes();
+			for (var i = markers.length - 1; i >= 0; i--) {
+				var s = "markers=" + markers[i].format();
+				args.push(s);
+			}
+
+			url += args.join("&");
+			this._url = url;
+		},
+
+		/**
+		 * Ask the map to recompute the API URL. If the URL changes, the map will automatically be refreshed.
+		 */
+		refresh: function() {
+			this._computeUrl();
+		},
+	});
+	</script>
+</dom-module>

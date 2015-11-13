@@ -1,0 +1,63 @@
+<!doctype html>
+<!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Google Map demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../google-map-static.html">
+  <link rel="import" href="../google-map-static-marker.html">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body fullbleed>
+
+<p>
+  API key: <input type="text" id="key" />
+  <button onclick="fnApplyKey()">Apply</button>
+</p>
+
+<p><b>Example</b> - minimal configuration</p>
+<p><google-map-static lat="37.77493" lng="-122.41942"></google-map-static></p>
+
+<p><b>Example</b> - add some markers to the map, wrangle them all, change the size, and change the map type</p>
+<p>
+  <google-map-static lat="37.77493" lng="-122.41942" map-type="terrain" size-x="200" size-y="200" fit-to-markers>
+      <google-map-static-marker lat="37.76493" lng="-122.41942"></google-map-static-marker>
+      <google-map-static-marker lat="37.78493" lng="-122.42442"></google-map-static-marker>
+  </google-map-static>
+</p>
+
+<p><b>Example</b> - change the marker styling</p>
+<p>
+  <google-map-static lat="37.77493" lng="-122.41942" zoom="13">
+      <google-map-static-marker color="0x00FF00" size="mid" label="M" lat="37.78493" lng="-122.42442"></google-map-static-marker>
+  </google-map-static>
+</p>
+
+<p><b>Example</b> - for convenience, add a simple marker (with default styling) at the middle of the map</p>
+<p>
+  <google-map-static lat="37.77493" lng="-122.41942" marker-at-center></google-map-static>
+</p>
+
+<script>
+  var gmap = document.querySelectorAll('google-map-static');
+
+  function fnApplyKey() {
+    var keyInput = document.querySelector('input#key').value;
+    for (var i = gmap.length - 1; i >= 0; i--) {
+      gmap[i].apiKey = keyInput;
+      // gmap[i].refresh();
+    }
+  }
+
+  function toggleControls() {
+    gmap.disableDefaultUi = !gmap.disableDefaultUi;
+  }
+</script>
+</body>
+</html>

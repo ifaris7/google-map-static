@@ -1,0 +1,27 @@
+{
+  "name": "google-map-static",
+  "version": "0.1.0",
+  "description": "Web components to load Google API libraries",
+  "main": "google-map-static.html",
+  "authors": [
+    "Andy Russell <andrew.russell@quicksecure.co>"
+  ],
+  "license": "Apache2",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "google",
+    "maps"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  }
+}

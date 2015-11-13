@@ -1,0 +1,72 @@
+<link rel="import" href="../../res/polymer/polymer.html">
+
+<link rel="import" href="../../res/iron-image/iron-image.html">
+<link rel="import" href="../../res/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="google-map-static-marker">
+	<template></template>
+
+	<script>
+	Polymer({
+		is: "google-map-static-marker",
+
+		properties: {
+			/**
+			 * Required. Latitude of the marker.
+			 */
+			lat: {
+				type: Number
+			},
+			/**
+			 * Required. Longitude of the marker.
+			 */
+			lng: {
+				type: Number
+			},
+			/**
+			 * Optional size. One of 'tiny', 'mid', 'small', or leave blank for default size.
+			 */
+			size: {
+				type: String
+			},
+			/**
+			 * Optional color. Can be a 24-bit, hex-encoded color (such as '0xFFFFCC') or one of 'black', 'brown', 'green', 'purple', 'yellow', 'blue', 'gray', 'orange', 'red', 'white'.
+			 */
+			color: {
+				type: String
+			},
+			/**
+			 * Optional label. Uppercase alphanumeric character. Discarded for tiny and small markers.
+			 */
+			label: {
+				type: String
+			},
+		},
+
+		/**
+		 * Serialize the element in preparation for use in the more complete URL. This method is intended to be internal and not used by most users.
+		 */
+		format: function() {
+			params = [];
+
+			if(this.size) params.push("size:" + this.size);
+			if(this.color) params.push("color:" + this.color);
+			if(this.label) {
+				if(this.label.length == 1) params.push("label:" + this.label);
+				else {
+					console.error("google-map-static-marker: label is not exactly one character long");
+					return null;
+				}
+			}
+
+			if(this.lat && this.lng) params.push(String(this.lat) + "," + String(this.lng));
+			else {
+				console.error("google-map-static-marker: both lat and lng need to be specified");
+				return null;
+			}
+
+			return params.join("|");
+		},
+	});
+	</script>
+</dom-module>
