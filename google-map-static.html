@@ -1,7 +1,7 @@
-<link rel="import" href="../../res/polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../../res/iron-image/iron-image.html">
-<link rel="import" href="../../res/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="google-map-static-marker.html">
 
@@ -37,9 +37,6 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 -->
 
 <dom-module id="google-map-static">
-	<style>
-	</style>
-
 	<template>
 		<iron-image src="{{_url}}"></iron-image>
 		<content id="markers" select="google-map-static-marker"></content>
