@@ -38,6 +38,13 @@
 			label: {
 				type: String
 			},
+			/**
+			 * Show debugging messages.
+			 */
+			debug: {
+				type: Boolean,
+				value: false
+			}
 		},
 
 		/**
@@ -51,14 +58,14 @@
 			if(this.label) {
 				if(this.label.length == 1) params.push("label:" + this.label);
 				else {
-					console.error("google-map-static-marker: label is not exactly one character long");
+					if(this.debug) console.error("google-map-static-marker: label is not exactly one character long");
 					return null;
 				}
 			}
 
 			if(this.lat && this.lng) params.push(String(this.lat) + "," + String(this.lng));
 			else {
-				console.error("google-map-static-marker: both lat and lng need to be specified");
+				if(this.debug) console.error("google-map-static-marker: both lat and lng need to be specified");
 				return null;
 			}
 
