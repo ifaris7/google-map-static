@@ -38,6 +38,9 @@
 			label: {
 				type: String
 			},
+			icon : {
+				type: String
+			},
 			/**
 			 * Show debugging messages.
 			 */
@@ -53,6 +56,7 @@
 		format: function() {
 			params = [];
 
+			if(this.icon) params.push("icon:" + this.icon);
 			if(this.size) params.push("size:" + this.size);
 			if(this.color) params.push("color:" + this.color);
 			if(this.label) {
