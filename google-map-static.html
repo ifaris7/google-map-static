@@ -37,7 +37,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 
 <dom-module id="google-map-static">
 	<template>
-		<iron-image src="[[_url]]" preload placeholder="[[placeholder]]"></iron-image>
+		<iron-image on-tap="_onTap" src="[[_url]]" preload placeholder="[[placeholder]]"></iron-image>
 		<content id="markers" select="google-map-static-marker"></content>
 	</template>
 
@@ -124,6 +124,9 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 			 */
 			placeholder: {
 				type: String,
+			},
+			toggle : {
+				type : String,
 			}
 		},
 
@@ -173,6 +176,10 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 		refresh: function() {
 			this._computeUrl();
 		},
+		_onTap : function(){
+			if(this.toggle)
+				document.querySelector(this.toggle).toggle();
+		}
 	});
 	</script>
 </dom-module>
