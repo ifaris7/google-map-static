@@ -85,6 +85,9 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 				type: Number,
 				value: 480,
 			},
+			fitToParent : {
+				type : Boolean
+			},
 			/**
 			 * Choose which type of map to show. One of 'roadmap', 'satellite', 'hybrid', 'terrain'.
 			 */
@@ -135,9 +138,11 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 		],
 
 		attached: function() {
+			
+			if(this.fitToParent)
+				this._getParentHeight();
 			this._computeUrl();
 		},
-
 		_computeUrl: function() {
 			url = "https://maps.googleapis.com/maps/api/staticmap?";
 			args = [];
@@ -169,7 +174,10 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 			url += args.join("&");
 			this._url = url;
 		},
-
+		_getParentHeight : function(){
+			this.set('sizeY', this.parentElement.clientHeight);
+			this.set('sizeX', this.parentElement.clientWidth);
+		},
 		/**
 		 * Ask the map to recompute the API URL. If the URL changes, the map will automatically be refreshed.
 		 */
