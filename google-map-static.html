@@ -1,9 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
-
 <link rel="import" href="../iron-image/iron-image.html">
-
 <link rel="import" href="google-map-static-marker.html">
-
 <!--
 The `google-map-static` element fetches a map from the Google Static Maps API.
 
@@ -34,160 +31,178 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 
 @demo
 -->
-
 <dom-module id="google-map-static">
-	<template>
-		<iron-image on-tap="_onTap" src="[[_url]]" preload placeholder="[[placeholder]]"></iron-image>
-		<content id="markers" select="google-map-static-marker"></content>
-	</template>
+    <template>
+        <div on-tap="_onTap" class$="expand-map layout layout-align-center-center [[ _expandMapClass ]]">
+        	<i class="fa fa-map-marker"></i>
+        	<span> [[ expandMapText ]] </span>
+        </div>
+        <iron-image on-tap="_onTap" src="[[_url]]" preload placeholder="[[placeholder]]"></iron-image>
+        <content id="markers" select="google-map-static-marker"></content>
+    </template>
+    <script>
+    Polymer({
+        is: "google-map-static",
 
-	<script>
-	Polymer({
-		is: "google-map-static",
+        properties: {
+            /**
+             * Computed URL of the static map.
+             */
+            _url: {
+                type: String
+            },
+            /**
+             * Disallow image from loading.
+             */
+            _preventLoad: {
+                type: Boolean,
+                value: true
+            },
+            /**
+             * Latitude of the center of the map. Optional only if you specify markers.
+             */
+            lat: {
+                type: Number,
+            },
+            /**
+             * Longitude of the center of the map. Optional only if you specify markers.
+             */
+            lng: {
+                type: Number,
+            },
+            /**
+             * Width of the resulting image.
+             */
+            sizeX: {
+                type: Number,
+                value: 640,
+            },
+            /**
+             * Height of the resulting image.
+             */
+            sizeY: {
+                type: Number,
+                value: 480,
+            },
+            expandMap : {
+            	type : Boolean,
+                value : true
+            },
+            expandMapText : {
+            	type : String,
+            	value : "expand-map"
+            },
+            fitToParent: {
+                type: Boolean
+            },
+            /**
+             * Choose which type of map to show. One of 'roadmap', 'satellite', 'hybrid', 'terrain'.
+             */
+            mapType: {
+                type: String,
+                value: "roadmap",
+            },
+            /**
+             * Zoom level of the map.
+             */
+            zoom: {
+                type: Number,
+                value: 10,
+            },
+            /**
+             * Let the map autozoom to contain all markers. Overrides zoom parameter.
+             */
+            fitToMarkers: {
+                type: Boolean,
+                value: false,
+            },
+            /**
+             * For convenience you can place a marker at the center of the map.
+             */
+            markerAtCenter: {
+                type: Boolean,
+                value: false,
+            },
+            /**
+             * Required. API key given to you by Google.
+             */
+            apiKey: {
+                type: String,
+            },
+            /**
+             * URL to a placeholder image to display while the API is busy.
+             */
+            placeholder: {
+                type: String,
+            },
+            toggle: {
+                type: String,
+            },
+            _expandMapClass : {
+                type : String,
+                computed : "_setExpandMapClass(expandMap)"
+            }
+        },
 
-		properties: {
-			/**
-			 * Computed URL of the static map.
-			 */
-			_url: {
-				type: String
-			},
-			/**
-			 * Disallow image from loading.
-			 */
-			_preventLoad: {
-				type: Boolean,
-				value: true
-			},
-			/**
-			 * Latitude of the center of the map. Optional only if you specify markers.
-			 */
-			lat: {
-				type: Number,
-			},
-			/**
-			 * Longitude of the center of the map. Optional only if you specify markers.
-			 */
-			lng: {
-				type: Number,
-			},
-			/**
-			 * Width of the resulting image.
-			 */
-			sizeX: {
-				type: Number,
-				value: 640,
-			},
-			/**
-			 * Height of the resulting image.
-			 */
-			sizeY: {
-				type: Number,
-				value: 480,
-			},
-			fitToParent : {
-				type : Boolean
-			},
-			/**
-			 * Choose which type of map to show. One of 'roadmap', 'satellite', 'hybrid', 'terrain'.
-			 */
-			mapType: {
-				type: String,
-				value: "roadmap",
-			},
-			/**
-			 * Zoom level of the map.
-			 */
-			zoom: {
-				type: Number,
-				value: 10,
-			},
-			/**
-			 * Let the map autozoom to contain all markers. Overrides zoom parameter.
-			 */
-			fitToMarkers: {
-				type: Boolean,
-				value: false,
-			},
-			/**
-			 * For convenience you can place a marker at the center of the map.
-			 */
-			markerAtCenter: {
-				type: Boolean,
-				value: false,
-			},
-			/**
-			 * Required. API key given to you by Google.
-			 */
-			apiKey: {
-				type: String,
-			},
-			/**
-			 * URL to a placeholder image to display while the API is busy.
-			 */
-			placeholder: {
-				type: String,
-			},
-			toggle : {
-				type : String,
-			}
-		},
+        observers: [
+            "_computeUrl(lat, lng, sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey)"
+        ],
 
-		observers: [
-			"_computeUrl(lat, lng, sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey)"
-		],
+        attached: function() {
 
-		attached: function() {
-			
-			if(this.fitToParent)
-				this._getParentHeight();
-			this._computeUrl();
-		},
-		_computeUrl: function() {
-			url = "https://maps.googleapis.com/maps/api/staticmap?";
-			args = [];
+            if (this.fitToParent)
+                this._getParentHeight();
+            this._computeUrl();
+        },
+        _computeUrl: function() {
+            url = "https://maps.googleapis.com/maps/api/staticmap?";
+            args = [];
 
-			if(this.apiKey) args.push("key=" + this.apiKey);
-			else {
-				console.warn("google-map-static: api-key not specified");
-			}
+            if (this.apiKey) args.push("key=" + this.apiKey);
+            else {
+                console.warn("google-map-static: api-key not specified");
+            }
 
-			if(this.lat && this.lng) args.push("center=" + String(this.lat) + "," + String(this.lng));
-			if(!this.fitToMarkers) args.push("zoom=" + String(this.zoom));
-			if(this.mapType) args.push("maptype=" + this.mapType);
+            if (this.lat && this.lng) args.push("center=" + String(this.lat) + "," + String(this.lng));
+            if (!this.fitToMarkers) args.push("zoom=" + String(this.zoom));
+            if (this.mapType) args.push("maptype=" + this.mapType);
 
-			if(this.sizeX > 0 && this.sizeY > 0) args.push("size=" + String(this.sizeX) + "x" + String(this.sizeY));
-			else {
-				console.warn("google-map-static: invalid size");
-			}
+            if (this.sizeX > 0 && this.sizeY > 0) args.push("size=" + String(this.sizeX) + "x" + String(this.sizeY));
+            else {
+                console.warn("google-map-static: invalid size");
+            }
 
-			if(this.markerAtCenter) args.push("markers=" + String(this.lat) + "," + String(this.lng));
+            if (this.markerAtCenter) args.push("markers=" + String(this.lat) + "," + String(this.lng));
 
-			var markers = Polymer.dom(this.$.markers).getDistributedNodes();
-			for (var i = markers.length - 1; i >= 0; i--) {
-				var s = "markers=" + markers[i].format();
-				if(s !== null) {
-					args.push(s);
-				}
-			}
+            var markers = Polymer.dom(this.$.markers).getDistributedNodes();
+            for (var i = markers.length - 1; i >= 0; i--) {
+                var s = "markers=" + markers[i].format();
+                if (s !== null) {
+                    args.push(s);
+                }
+            }
 
-			url += args.join("&");
-			this._url = url;
-		},
-		_getParentHeight : function(){
-			this.set('sizeY', this.parentElement.clientHeight);
-			this.set('sizeX', this.parentElement.clientWidth);
-		},
-		/**
-		 * Ask the map to recompute the API URL. If the URL changes, the map will automatically be refreshed.
-		 */
-		refresh: function() {
-			this._computeUrl();
-		},
-		_onTap : function(){
-			if(this.toggle)
-				document.querySelector(this.toggle).toggle();
-		}
-	});
-	</script>
+            url += args.join("&");
+            this._url = url;
+        },
+        _getParentHeight: function() {
+            this.set('sizeY', this.parentElement.clientHeight);
+            this.set('sizeX', this.parentElement.clientWidth);
+        },
+        /**
+         * Ask the map to recompute the API URL. If the URL changes, the map will automatically be refreshed.
+         */
+        refresh: function() {
+            this._computeUrl();
+        },
+        _onTap: function() {
+            if (this.toggle)
+                document.querySelector(this.toggle).toggle();
+        },
+        _setExpandMapClass : function(expandMap){
+        	// console.log('_setExpandMapClass', this.expandMap);
+        	return this.expandMap ? "" : "hide";
+        }
+    });
+    </script>
 </dom-module>
