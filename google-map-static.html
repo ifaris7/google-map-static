@@ -86,7 +86,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
             },
             expandMap : {
             	type : Boolean,
-                value : true
+                value : false 
             },
             expandMapText : {
             	type : String,
@@ -149,10 +149,16 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
         ],
 
         attached: function() {
-
             if (this.fitToParent)
                 this._getParentHeight();
             this._computeUrl();
+            this._addEventListeners();
+        },
+        _addEventListeners: function(){
+            window.addEventListener('resize', this._onResize.bind(this));
+        },
+        _onResize : function(){
+            this.refresh();
         },
         _computeUrl: function() {
             url = "https://maps.googleapis.com/maps/api/staticmap?";
@@ -193,6 +199,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
          * Ask the map to recompute the API URL. If the URL changes, the map will automatically be refreshed.
          */
         refresh: function() {
+            this._getParentHeight();
             this._computeUrl();
         },
         _onTap: function() {
@@ -200,7 +207,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
                 document.querySelector(this.toggle).toggle();
         },
         _setExpandMapClass : function(expandMap){
-        	// console.log('_setExpandMapClass', this.expandMap);
+            console.log(expandMap);
         	return this.expandMap ? "" : "hide";
         }
     });
