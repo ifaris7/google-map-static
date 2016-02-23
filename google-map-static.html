@@ -166,7 +166,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 
             if (this.apiKey) args.push("key=" + this.apiKey);
             else {
-                console.warn("google-map-static: api-key not specified");
+                // console.warn("google-map-static: api-key not specified");
             }
 
             if (this.lat && this.lng) args.push("center=" + String(this.lat) + "," + String(this.lng));
@@ -175,7 +175,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 
             if (this.sizeX > 0 && this.sizeY > 0) args.push("size=" + String(this.sizeX) + "x" + String(this.sizeY));
             else {
-                console.warn("google-map-static: invalid size");
+                // console.warn("google-map-static: invalid size");
             }
 
             if (this.markerAtCenter) args.push("markers=" + String(this.lat) + "," + String(this.lng));
@@ -207,7 +207,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
                 document.querySelector(this.toggle).toggle();
         },
         _setExpandMapClass : function(expandMap){
-            console.log(expandMap);
+            // console.log(expandMap);
         	return this.expandMap ? "" : "hide";
         }
     });
