@@ -31,7 +31,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 <dom-module id="google-map-static">
     <template>
         <div on-tap="_onTap" class$="expand-map layout layout-align-center-center [[ _expandMapClass ]]">
-            <i class="fa fa-map-marker"></i>
+            <iron-icon icon="ys-icons|general:place"></iron-icon>
             <span> [[ expandMapText ]] </span>
         </div>
         <iron-image on-tap="_onTap" src="[[_url]]" preload placeholder="[[placeholder]]"></iron-image>
