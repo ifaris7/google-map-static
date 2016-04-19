@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-image/iron-image.html">
-<link rel="import" href="google-map-static-marker.html"/>
+<link rel="import" href="google-map-static-marker.html" />
 <!--
 The `google-map-static` element fetches a map from the Google Static Maps API.
 
@@ -31,7 +31,7 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
 <dom-module id="google-map-static">
     <template>
         <div on-tap="_onTap" class$="expand-map layout layout-align-center-center [[ _expandMapClass ]]">
-            <iron-icon icon="ys-icons|general:place"></iron-icon>
+            <i class="fa fa-map-marker"></i>
             <span> [[ expandMapText ]] </span>
         </div>
         <iron-image on-tap="_onTap" src="[[_url]]" preload placeholder="[[placeholder]]"></iron-image>
@@ -40,7 +40,6 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
     <script>
     Polymer({
         is: "google-map-static",
-
         properties: {
             /**
              * Computed URL of the static map.
@@ -67,13 +66,13 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
                 type: Number,
                 value: 480,
             },
-            expandMap : {
-                type : Boolean,
-                value : false 
+            expandMap: {
+                type: Boolean,
+                value: false
             },
-            expandMapText : {
-                type : String,
-                value : "expand-map"
+            expandMapText: {
+                type: String,
+                value: "expand-map"
             },
             fitToParent: {
                 type: Boolean,
@@ -116,9 +115,9 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
              */
             placeholder: String,
             toggle: String,
-            _expandMapClass : {
-                type : String,
-                computed : "_setExpandMapClass(expandMap)"
+            _expandMapClass: {
+                type: String,
+                computed: "_setExpandMapClass(expandMap)"
             },
             markersVersion: Array
         },
@@ -126,20 +125,19 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
         observers: [
             "_computeUrl(sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey, markersVersion)"
         ],
-
         attached: function() {
-            if (this.fitToParent) this._getParentHeight();
+            this._getParentDimensions();
             this._addEventListeners();
             this._observer = Polymer.dom(this.$.markers).observeNodes(function(info) {
                 // for now, only adding nodes is supported, not removing.
                 var mv = this.markersVersion;
-                this.set('markersVersion', mv?mv+1:1);
+                this.set('markersVersion', mv ? mv + 1 : 1);
             }.bind(this));
         },
-        _addEventListeners: function(){
+        _addEventListeners: function() {
             window.addEventListener('resize', this._onResize.bind(this));
         },
-        _onResize : function(){
+        _onResize: function() {
             this.refresh();
         },
         _computeUrl: function(sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey, markersVersion) {
@@ -147,14 +145,14 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
             args = [];
 
             if (apiKey) args.push("key=" + apiKey);
-            
+
             if (!fitToMarkers) args.push("zoom=" + String(zoom));
             if (mapType) args.push("maptype=" + mapType);
             if (sizeX > 0 && sizeY > 0) args.push("size=" + String(sizeX) + "x" + String(sizeY));
             if (markerAtCenter) args.push("markers=" + String(this.lat) + "," + String(this.lng));
 
             var markers = Polymer.dom(this.$.markers).getDistributedNodes();
-            if(markers.length > 0) {
+            if (markers.length > 0) {
                 for (var i = markers.length - 1; i >= 0; i--) {
                     var s = "markers=" + markers[i].format();
                     if (s !== null) {
@@ -166,21 +164,25 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
             url += args.join("&");
             this.set('_url', url);
         },
-        _getParentHeight: function() {
-            this.set('sizeY', this.parentElement.clientHeight);
+        _getParentDimensions: function() {
             this.set('sizeX', this.parentElement.clientWidth);
+            if (this.fitToParent) {
+                this.set('sizeY', this.parentElement.clientHeight);
+            } else {
+                this.set('sizeY', this.parentElement.clientWidth);
+            }
         },
         /**
          * Ask the map to recompute the API URL. If the URL changes, the map will automatically be refreshed.
          */
         refresh: function() {
-            this._getParentHeight();
+            this._getParentDimensions();
         },
         _onTap: function() {
             if (this.toggle)
                 document.querySelector(this.toggle).toggle();
         },
-        _setExpandMapClass : function(expandMap){
+        _setExpandMapClass: function(expandMap) {
             return this.expandMap ? "" : "hide";
         }
     });
