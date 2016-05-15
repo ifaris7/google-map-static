@@ -119,7 +119,10 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
                 type: String,
                 computed: "_setExpandMapClass(expandMap)"
             },
-            markersVersion: Array
+            markersVersion: Array,
+            toggleMarker : {
+              type : String
+            }
         },
 
         observers: [
@@ -179,8 +182,12 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
             this._getParentDimensions();
         },
         _onTap: function() {
-            if (this.toggle)
+            console.log(this.toggleMarker);
+            if (this.toggleMarker) {
+                this.fire('ys-infobox-toggle::tap', this.toggleMarker);
+            } else if (this.toggle) {
                 document.querySelector(this.toggle).toggle();
+            }
         },
         _setExpandMapClass: function(expandMap) {
             return this.expandMap ? "" : "hide";
