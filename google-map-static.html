@@ -41,6 +41,10 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
     Polymer({
         is: "google-map-static",
         properties: {
+            language: {
+              type : String,
+              value : 'ar'
+            },
             /**
              * Computed URL of the static map.
              */
@@ -125,9 +129,8 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
             },
             disableDefaultToggle : Boolean
         },
-
         observers: [
-            "_computeUrl(sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey, markersVersion)"
+            "_computeUrl(sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey, markersVersion, language)"
         ],
         attached: function() {
             this._getParentDimensions();
@@ -144,12 +147,13 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
         _onResize: function() {
             this.refresh();
         },
-        _computeUrl: function(sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey, markersVersion) {
+        _computeUrl: function(sizeX, sizeY, mapType, zoom, fitToMarkers, markerAtCenter, apiKey, markersVersion, language) {
             url = "https://maps.googleapis.com/maps/api/staticmap?";
             args = [];
 
-            if (apiKey) args.push("key=" + apiKey);
+            args.push('language=', language)
 
+            if (apiKey) args.push("key=" + apiKey);
             if (!fitToMarkers) args.push("zoom=" + String(zoom));
             if (mapType) args.push("maptype=" + mapType);
             if (sizeX > 0 && sizeY > 0) args.push("size=" + String(sizeX) + "x" + String(sizeY));
