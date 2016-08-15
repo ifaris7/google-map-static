@@ -159,6 +159,9 @@ The `google-map-static` element fetches a map from the Google Static Maps API.
             if (sizeX > 0 && sizeY > 0) args.push("size=" + String(sizeX) + "x" + String(sizeY));
             if (markerAtCenter) args.push("markers=" + String(this.lat) + "," + String(this.lng));
 
+            if(window.devicePixelRatio > 1){
+              args.push('scale=2');  
+            }
             args.push('language=' + language);
 
             var markers = Polymer.dom(this.$.markers).getDistributedNodes();
