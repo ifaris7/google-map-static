@@ -1,6 +1,6 @@
 {
   "name": "google-map-static",
-  "version": "0.1.0",
+  "version": "0.5.3",
   "description": "Web components to load Google API libraries",
   "main": "google-map-static.html",
   "authors": [
